@@ -1,0 +1,21 @@
+@import "tailwindcss";
+
+@font-face {
+	font-family: 'outfit';
+	src:url('/fonts/Outfit-VariableFont_wght.ttf')format('truetype');
+	font-weight: 100 900;
+	font-style: normal;
+	font-display: swap;
+}
+
+@layer base {
+	body {
+		font-family: 'outfit', sans-serif;
+		/*background: #6b7280;*/
+	}
+}
+
+@theme {
+	--color-primary: #4fbf8b;
+	--color-primary-dull: #44ae7c;
+}
