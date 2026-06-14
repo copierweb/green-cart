@@ -52,6 +52,6 @@ const addressScheme = new mongoose.Schema({
 	},									
 })
 
-const Address = mongoose.models.address || mongoose.model("Address", addressScheme)
+const Address = mongoose.models.Address || mongoose.model("Address", addressScheme)
 
 export default Address

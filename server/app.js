@@ -8,6 +8,7 @@ import sellerRouter from './routes/sellerRoutes.js'
 import productRouter from './routes/productRoutes.js'
 import cartRouter from './routes/cartRoutes.js'
 import addressRouter from './routes/addressRoutes.js'
+import orderRouter from './routes/orderRoutes.js'
 
 // ----------------------------------------------------------------------
 const app = express()
@@ -28,15 +29,16 @@ app.use('/api/v1/seller', sellerRouter)
 app.use('/api/v1/product', productRouter)
 app.use('/api/v1/cart', cartRouter)
 app.use('/api/v1/address', addressRouter)
+app.use('/api/v1/order', orderRouter)
 
-// app.get('/', ((req,res) => {
+app.get('/', ((req,res) => {
 
-// 	res.status(200).json({
-// 		status: 'success',
-// 		message: 'checking server',
-// 	})
+	res.status(200).json({
+		status: 'success',
+		message: 'checking server',
+	})
 
-// }))
+}))
 
 // ---------------------------------------------------------
 // handling unhandled routes

@@ -9,6 +9,7 @@ const router = express.Router();
 router
 	.post("/register", authController.register) // POST - /api/v1/users/register
 	.post("/login", authController.login) // POST - /api/v1/users/login
+	.get("/is-auth", authMiddleware.protect, authController.isUserAuth) // get - /api/v1/seller/is-auth
 	.post("/logout", authController.logout); // POST - /api/v1/users/logout
 
 // adding me end point

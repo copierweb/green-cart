@@ -5,7 +5,7 @@ import {v2 as cloudinary} from "cloudinary"
 
 // Add Product: POST - /api/v1/product/add
 export const addProduct = async (req, res) => {
-	let productData = JSON.parse(req.body.productValue);
+	let productData = JSON.parse(req.body.productData);
 
 	const images = req.files
 
@@ -31,7 +31,7 @@ export const addProduct = async (req, res) => {
 
 // ------------------------------------------------------------- //
 
-// get All products: /api/v1/product/allproducts
+// get All products: GET: /api/v1/product/allproducts
 export const getAllProducts = async (req, res) => {
 	const products = await Product.find()
 	
@@ -43,7 +43,7 @@ export const getAllProducts = async (req, res) => {
 };
 
 // ------------------------------------------------------------- //
-// get single product: /api/v1/product/*prodID*
+// get single product: GET: /api/v1/product/*prodID*
 export const getProductById = async (req, res) => {
 	const { prodId } = req.params
 
@@ -56,7 +56,7 @@ export const getProductById = async (req, res) => {
 };
 
 // ------------------------------------------------------------- //
-// change product in stock: /api/v1/product/in-stock
+// change product in stock: POST: /api/v1/product/in-stock
 export const changeStock = async (req, res) => {
 	const { id, inStock } = req.body
 

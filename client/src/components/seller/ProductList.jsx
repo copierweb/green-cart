@@ -1,21 +1,42 @@
 import { useState } from "react";
 import { useAppContext } from "../../context/AppContext";
 import ProductCard from "./ProductCard";
+import toast from "react-hot-toast"
 
 const ProductList = () => {
 	const {
 		state: { products },
+		axios,
+		fetchProducts,
 	} = useAppContext();
-	
+
 	const [outOfStock, setoutOfStock] = useState([]);
 
-	const handleCheckChange = (e) => {
-		const { checked , value } = e.target;
-		// console.log(e.target.value);
-		if (checked) {
-			setoutOfStock((prev) => [...prev, value]);
-		} else {
-			setoutOfStock((prev) => prev.filter((item) => item !== value));
+	// const handleCheckChange = (e) => {
+	// 	const { checked , value } = e.target;
+	// 	// console.log(e.target.value);
+	// 	if (checked) {
+	// 		setoutOfStock((prev) => [...prev, value]);
+	// 	} else {
+	// 		setoutOfStock((prev) => prev.filter((item) => item !== value));
+	// 	}
+	// };
+
+	const handleCheckChange = async (id, inStock) => {
+		try {
+			const { data } = await axios.post("/api/v1/product/in-stock", {
+				id,
+				inStock,
+			});
+			if (data.status === "success") {
+				fetchProducts()
+				toast.success(data.message)
+			} else {
+				toast.error(data.message)
+			}
+		} catch (err) {
+			toast.error(err.response.data.message || err.message)
+			console.log(err.message);
 		}
 	};
 
@@ -50,11 +71,14 @@ const ProductList = () => {
 					"
 				>
 					{products?.map((product) => (
-						<ProductCard 
-							product={product} 
-							key={product._id} 
+						<ProductCard
+							product={product}
+							key={product._id}
 							outOfStock={outOfStock}
-							onChange={(e)=> handleCheckChange(e)}
+							onChange={handleCheckChange}
+							// onChange={() =>
+							// 	handleCheckChange(product._id, !product.inStock)
+							// }
 						/>
 					))}
 				</div>

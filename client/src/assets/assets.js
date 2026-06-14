@@ -841,3 +841,57 @@ export const dummyOrders = [
     updatedAt: "2025-03-25T07:17:13.068Z",
   },
 ];
+
+// ------------------------------------------------ //
+
+// {
+  
+//   "name": "iPhone 16",
+//   "description": [
+//     "Latest model",
+//     "256GB Storage"
+//   ],
+//   "price": 1000,
+//   "offerPrice": 900,
+//   "image": [
+//     "https://res.cloudinary.com/dcgsqyyba/image/upload/v1780641999/wqwfajkmbqpssxeiqfko.png"
+//   ],
+//   "category": "Mobile",
+//   "inStock": true,
+//   "__v": 0
+// }
+
+// {
+//   "items": [
+//     {
+//       "product": {
+//           "name": "iPhone 16",
+//           "description": [
+//             "Latest model",
+//             "256GB Storage"
+//           ],
+//           "price": 1000,
+//           "offerPrice": 900,
+//           "image": [
+//             "https://res.cloudinary.com/dcgsqyyba/image/upload/v1780641999/wqwfajkmbqpssxeiqfko.png"
+//           ],
+//           "category": "Mobile",
+//           "inStock": true,
+//           "__v": 0        
+//       },
+//       "quantity": 1,
+//     }
+//   ]
+//   "address": {
+//     "firstName": "Great",
+//     "lastName": "Stack",
+//     "email": "user.greatstack@gmail.com",
+//     "street": "Street 123",
+//     "city": "Main City",
+//     "state": "New State",
+//     "zipcode": 123456,
+//     "country": "IN",
+//     "phone": "1234567890",    
+//   },
+//   "amount": 222222
+// }

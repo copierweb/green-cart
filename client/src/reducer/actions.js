@@ -21,6 +21,10 @@ export const updateCart = (dispatch, cartDatata) => {
   dispatch({ type: "UPDATE_CART", payload: cartDatata});
 };
 
+// add cartItems to DB when user login (if it any item in the cart before login)
+export const setCart = (dispatch, cartData) => {
+  dispatch({ type: "SET_CART_ITEMS", payload: cartData});
+};
 
 // ------------------------------------------------------------- //
 // actions for product fetching
@@ -48,12 +52,18 @@ export const setUserLogout = (dispatch)=> {
 }
 // ------------------------------------------------------------- //
 // actions for seller dashboard
-export const setIsSeller = (dispatch)=> {
-  dispatch({type:"SET_IS_SELLER"})
+export const setIsSeller = (dispatch, status)=> {
+  dispatch({type:"SET_IS_SELLER", payload: status})
 }
 
 // ------------------------------------------------------------- //
 // action for set search Query
 export const setSearchQuery = (dispatch,query)=> {
   dispatch({type:"SET_SEARCH_QUERY", payload: query})
+}
+
+// ----------------------------------------------------------------- //
+// action for post reQuest
+export const setUploading = (dispatch, status)=> {
+  dispatch({type:"SET_UPLOADING", payload: status})
 }

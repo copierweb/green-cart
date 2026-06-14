@@ -1,13 +1,14 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Button from "../components/Button";
 import CartItem from "../components/CartItem";
 import { useAppContext } from "../context/AppContext";
 import { assets, dummyAddress } from "../assets/assets";
 import useCartActions from "../hooks/useCartActions";
+import toast from "react-hot-toast";
 
 const CartPage = () => {
-	const [addresses, setAddresses] = useState(dummyAddress);
-	const [selectedAddresses, setSelectedAddresses] = useState();
+	const [addresses, setAddresses] = useState([]);
+	const [selectedAddresses, setSelectedAddresses] = useState(null);
 	const [showAddAddress, setShowAddAddress] = useState(false);
 
 	const [paymentOption, setPaymentOption] = useState("COD");
@@ -15,17 +16,80 @@ const CartPage = () => {
 	const { getTotalPrice, getCartItemCount } = useCartActions();
 
 	const {
-		state: { cartItems },
+		axios,
+		state: { cartItems, user },
 		navigate,
+		actions,
 	} = useAppContext();
 
 	const cartItemsIDs = Object.keys(cartItems);
 
+
 	const tax = (getTotalPrice() * 2) / 100;
 	const totalAmount = getTotalPrice() + tax;
+// ---------------------------------------------------------------
+	// function for getting address from DB
+	const getUserAddress = async () => {
+		try {
+			const { data } = await axios.get("/api/v1/address/get");
 
-	const placeOrder = async () => {};
+			if (data.status === "success") {
+				setAddresses(data.address);
 
+				if (data.address?.length > 0) {
+					setSelectedAddresses(data.address[0]);
+				}
+			} else {
+				toast.error(data.message || "something went wrong");
+			}
+		} catch (err) {
+			toast.error(err.response?.data.message || err.message);
+			console.log(err.response?.data.message || err.message);
+		}
+	};
+// -----------------------------------------------
+	// place order function
+	const placeOrder = async (e) => {
+		e.preventDefault();
+
+		try {
+			if (!setSelectedAddresses) {
+				return toast.error("Please Select An Address");
+			}
+
+			// place Oreder With COD
+			if (paymentOption === "COD") {
+				
+				const { data } = await axios.post("/api/v1/order/cod", {
+					items: cartItemsIDs.map((id)=> ({
+						product: id,
+						quantity: cartItems[id]
+					})),
+					address: selectedAddresses._id,
+				});
+
+				if(data.status === "success") {
+					toast.success(data.message)
+					actions.setCart({})
+					navigate("/my-orders")
+					
+				} else {
+					toast.error(data.message || "something went wrong")
+				}
+			}
+		} catch (err) {
+			toast.error(err.response?.data.message || err.message)
+			console.log(err.response?.data.message || err.message);
+		}
+	};
+// -------------------------------------------------------------
+	// calling getUserAddress function (only user is available then only this function is executed)
+	useEffect(() => {
+		if (user) {
+			getUserAddress();
+		}
+	}, [user]);
+// ------------------------------------------------------------
 	return (
 		<div className="flex flex-col md:flex-row max-sm:gap-8 md:gap-20">
 			{/*---- shopping cart -----*/}

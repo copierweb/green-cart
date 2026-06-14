@@ -1,17 +1,30 @@
-import { useState } from 'react';
-import { useAppContext } from '../../context/AppContext';
-import Button from '../Button';
+import { useState } from "react";
+import { useAppContext } from "../../context/AppContext";
+import Button from "../Button";
 
 const SellerLogin = () => {
-	const [email, setEmail] = useState("")
-	const [password, setPassword] = useState("")
+	const [email, setEmail] = useState("admin@example.com");
+	const [password, setPassword] = useState("admin@123");
 
-	const { actions } = useAppContext()
+	const { state, axios, actions } = useAppContext();
 
-	const onSubmitHandler = async(e)=> {
-		e.preventDefault()
-		actions.setIsSeller()
-	}
+	const onSubmitHandler = async (e) => {
+		try {
+			e.preventDefault();
+			const { data } = await axios.post("/api/v1/seller/login", {
+				email,
+				password,
+			});
+			if (data.status === "success") {
+				actions.setIsSeller(true);
+				actions.setError(null)
+			}
+		} catch (err) {
+			console.log(err.message);
+			console.log(err.response.data.message);
+			actions.setError(err.response.data.message);
+		}
+	};
 
 	return (
 		<div
@@ -20,7 +33,6 @@ const SellerLogin = () => {
 				flex justify-center items-center 
 				z-50 
 			"
-			
 		>
 			<div
 				className="
@@ -29,7 +41,6 @@ const SellerLogin = () => {
 					border border-gray-200
 					rounded-lg shadow-lg
 				"
-				
 			>
 				<h1
 					className="
@@ -38,24 +49,26 @@ const SellerLogin = () => {
 						font-bold
 					"
 				>
-					<span className="text-primary">Seller</span>{" "}
-					Login
+					<span className="text-primary">Seller</span> Login
 				</h1>
 				<form
 					onSubmit={onSubmitHandler}
 					className="flex flex-col gap-3"
 				>
-
 					<div className="flex flex-col gap-1">
-						<label htmlFor="eamil">Email:</label>
+						<label htmlFor="email"
+							
+						>
+							Email:
+						</label>
 						<input
 							type="email"
 							id="email"
 							placeholder="enter email"
-							// required
+							required
 							value={email}
-							onChange={(e)=> setEmail(e.target.value)}
-							className="
+							onChange={(e) => setEmail(e.target.value)}
+							className={`
 								w-full 
 								p-2 text-md text-gray-400 font-normal
 								outline-none
@@ -63,8 +76,10 @@ const SellerLogin = () => {
 								rounded-lg
 								focus:ring-2 focus:ring-primary 
 								focus:border-transparent
-							"
-							
+								${state.error && 
+									'border-red-700'
+								}
+							`}
 						/>
 					</div>
 					<div className="flex flex-col gap-1">
@@ -73,10 +88,10 @@ const SellerLogin = () => {
 							type="password"
 							id="password"
 							placeholder="enter Password"
-							// required
+							required
 							value={password}
-							onChange={(e)=> setPassword(e.target.value)}
-							className="
+							onChange={(e) => setPassword(e.target.value)}
+							className={`
 								w-full 
 								p-2 text-md text-gray-400 font-normal
 								outline-none
@@ -84,7 +99,8 @@ const SellerLogin = () => {
 								rounded-lg
 								focus:ring-2 focus:ring-primary 
 								focus:border-transparent
-							"
+								${state.error ? 'border-red-700' : ''}
+							`}
 						/>
 					</div>
 
@@ -92,6 +108,12 @@ const SellerLogin = () => {
 						Login
 					</Button>
 				</form>
+				{
+					state.error && 
+					<p className="text-red-600 mt-5">
+						{state.error}
+					</p>
+				}
 			</div>
 		</div>
 	);

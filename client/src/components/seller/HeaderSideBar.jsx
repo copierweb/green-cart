@@ -1,15 +1,27 @@
 import { assets } from "../../assets/assets"
 import { useAppContext } from '../../context/AppContext';
+import toast from "react-hot-toast"
 
 const HeaderSideBar = ()=> {
 
-	const { actions, navigate } = useAppContext()
+	const { actions, axios, navigate } = useAppContext()
 
 	const logout = async(e)=> {
-		e.preventDefault()
-		actions.setIsSeller()
+		try {
+			e.preventDefault()
+			const {data} = await axios.post('/api/v1/seller/logout')
 
-		// navigate('/seller')
+			if(data.status === 'success') {
+				actions.setIsSeller(false)
+				toast.success(data.message);
+				navigate("/")
+			} else {
+				toast.error(data.message)
+			}
+		} catch(err) {
+			toast.error(err.message)
+			console.log(err.message);
+		}
 	}
 
 	return (

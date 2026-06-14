@@ -1,17 +1,34 @@
 import { useEffect, useState } from "react";
 import { dummyOrders } from "../../assets/assets";
 import OrderCard from "./OrderCard";
+import { useAppContext } from "../../context/AppContext";
 
 const Orders = () => {
 	const [totalOrders, setTotalOrders] = useState([]);
 
+	const {axios, state} = useAppContext()
+
 	const fetchOrders = async () => {
-		setTotalOrders(dummyOrders);
+		try {
+			const {data} = await axios.get('/api/v1/order/seller')
+
+			if(data.status === "success") {
+				setTotalOrders(data.orders);
+			} else {
+				toast.error(data.message || "something went wrong")
+			}
+
+		} catch(err) {
+			toast.error(err.response?.data.message || err.message)
+			console.log(err.response?.data.message || err.message);
+		}
 	};
 
 	useEffect(() => {
-		fetchOrders();
-	}, []);
+		if(state.isSeller) {
+			fetchOrders();
+		}
+	}, [state.isSeller]);
 
 	return (
 		<div>

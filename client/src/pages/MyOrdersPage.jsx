@@ -1,17 +1,36 @@
 import { useState, useEffect } from "react";
 import { dummyOrders } from "../assets/assets";
 import OrderItemCard from "../components/OrderItemCard";
+import toast from "react-hot-toast"
+import { useAppContext } from "../context/AppContext";
 
 const MyOrdersPage = () => {
 	const [orders, setOrders] = useState([]);
 
+	const {state, axios} = useAppContext()
+
 	const fetchMyOrders = async ()=> {
-		setOrders(dummyOrders);
+		try {
+			const {data} = await axios.get('/api/v1/order/user')
+
+			if(data.status === "success") {
+				setOrders(data.orders);
+			} else {
+				toast.error(data.message || "something went wrong")
+			}
+
+		} catch(err) {
+			toast.error(err.response?.data.message || err.message)
+			console.log(err.response?.data.message || err.message);
+		}
+		
 	}
 
 	useEffect(() => {
-		fetchMyOrders()
-	}, []);
+		if(state.user) {
+			fetchMyOrders()
+		}
+	}, [state.user]);
 
 	return (
 		<div>

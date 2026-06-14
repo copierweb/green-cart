@@ -24,12 +24,12 @@ const ProductCategory = () => {
 				<>
 					<h1
 						className="
-					relative inline-block 
-					text-2xl text-gray-800 font-semibold
-					after:absolute after:content-[''] 
-					after:w-25 after:h-1 after:bg-primary
-					after:right-0 after:-bottom-2
-				"
+						relative inline-block 
+						text-2xl text-gray-800 font-semibold
+						after:absolute after:content-[''] 
+						after:w-25 after:h-1 after:bg-primary
+						after:right-0 after:-bottom-2
+					"
 					>
 						{searchCategory.text.toUpperCase()}
 					</h1>
@@ -45,6 +45,11 @@ const ProductCategory = () => {
 							<Product product={product} key={product._id} />
 						))}
 					</div>
+					{filteredProducts.length === 0 && (
+						<p className="text-center"> 
+							No products found in this category
+						</p>
+					)}
 				</>
 			)}
 		</div>

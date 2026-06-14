@@ -12,7 +12,7 @@ const CartItem = ({ id }) => {
 
 	const item = products?.find((item) => item._id === id);
 	const itemQuantity = cartItems[item?._id];
-	const subTotal = itemQuantity * item.offerPrice;
+	const subTotal = itemQuantity * item?.offerPrice;
 
 	return (
 		item && (

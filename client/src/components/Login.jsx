@@ -1,20 +1,51 @@
 import { useState } from "react";
 import Button from "./Button";
 import { useAppContext } from "../context/AppContext";
+import toast from "react-hot-toast"
+import useCartActions from "../hooks/useCartActions";
 
 const Login = () => {
 	const [isRegister, setIsRegister] = useState(false);
-	const { actions } = useAppContext();
+	const [name, setName] = useState("")
+	const [email, setEmail] = useState("")
+	const [password, setPassword] = useState("")
+
+	const {addToCart} = useCartActions()
+
+	const { state, actions, axios } = useAppContext();
 
 	const onSubmitHandler = async(e)=> {
-		e.preventDefault()
+		try {
+			e.preventDefault()
+			const state = isRegister ? 'register' : 'login'
 
-		actions.setUser({
-			name: 'test-1',
-			email: 'test-1@gmail.com'
-		})
+			const {data} = await axios.post(`/api/v1/users/${state}`,
+				{
+					name,
+					email,
+					password	
+				}
+			)
 
-		actions.closeLoginBox()
+			if(data.status === 'success') {
+				actions.setUser(data.user)
+				toast.success(data.message)
+				actions.closeLoginBox()
+				actions.setCart(data.user.cartItems)
+			} else {
+				toast.error(data.message || "something went wrong")
+			}
+
+		} catch(err) {
+			toast.error(err.response?.data.message || err.message)
+			console.log(err.response?.data.message || err.message);
+		}
+
+		// actions.setUser({
+		// 	name: 'test-1',
+		// 	email: 'test-1@gmail.com'
+		// })
+
 	}
 
 	return (
@@ -55,6 +86,9 @@ const Login = () => {
 								type="text"
 								id="name"
 								placeholder="enter Name"
+								required
+								value={name}
+								onChange={(e)=>setName(e.target.value)}
 								className="
 									w-full 
 									p-2 text-md text-gray-400 font-normal
@@ -73,6 +107,9 @@ const Login = () => {
 							type="email"
 							id="email"
 							placeholder="enter email"
+							required
+							value={email}
+							onChange={(e)=>setEmail(e.target.value)}
 							className="
 								w-full 
 								p-2 text-md text-gray-400 font-normal
@@ -90,6 +127,9 @@ const Login = () => {
 							type="password"
 							id="password"
 							placeholder="enter password"
+							required
+							value={password}
+							onChange={(e)=>setPassword(e.target.value)}
 							className="
 								w-full 
 								p-2 text-md text-gray-400 font-normal

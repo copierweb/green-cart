@@ -1,6 +1,8 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { assets } from "../assets/assets";
 import Button from "../components/Button";
+import { useAppContext } from "../context/AppContext";
+import toast from 'react-hot-toast'
 
 // input field component
 const InputField = ({ type, plchldr, name, handleChange, address }) => (
@@ -24,6 +26,7 @@ const InputField = ({ type, plchldr, name, handleChange, address }) => (
 );
 
 const AddAddress = () => {
+	const {state, axios, navigate} = useAppContext()
 
 	const [address, setAddres] = useState({
 		firstName:'',
@@ -34,7 +37,7 @@ const AddAddress = () => {
 		state:'',
 		zipcode:'',
 		country:'',
-		phone:''
+		phone:null,
 	})
 
 	const handleChange = (e)=> {
@@ -50,7 +53,28 @@ const AddAddress = () => {
 
 	const onSubmitHandler = async (e) => {
 		e.preventDefault();
+		try {
+			const {data} = await axios.post('/api/v1/address/add', {address})
+
+			if(data.status === 'success') {
+				toast.success(data.message)
+				navigate("/cart")
+			} else {
+				toast.error(data.message || "some problem")
+			}
+
+		} catch(err) {
+			toast.error(err.response?.data.message || err.message)
+			console.log(err.response?.data.message || err.message);
+		}
 	};
+
+	// if not logged in navigate to cart
+	useEffect(()=> {
+		if(!state.user) {
+			navigate("/cart")
+		}
+	},[])
 
 
 	return (

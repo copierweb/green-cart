@@ -15,7 +15,7 @@ export const getAllUsers = async(req, res) => {
 // getting loged in user details
 
 export const getCurrentUserDetails = async(req, res) => {
-	const userId = req.user.id
+	// const userId = req.user.id
 	const loggedInUser = req.user
 	// const user = await User.findById(userId);
 

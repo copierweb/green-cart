@@ -5,6 +5,7 @@ export const initialState = {
 	products: [],
 	cartItems: {},
 	loading: false,
+	uploading: false,
 	searchQuery: "",
 	error: null,
 };
@@ -19,6 +20,9 @@ export const reducerCallback = (state, { type, payload }) => {
 
 		case "SET_LOADING":
 			return { ...state, loading: true };
+
+		case "SET_UPLOADING":
+			return { ...state, uploading: payload };
 
 		case "FETCH_PRODUCTS":
 			return {
@@ -45,6 +49,11 @@ export const reducerCallback = (state, { type, payload }) => {
 				...state,
 				cartItems: payload,
 			};
+		case "SET_CART_ITEMS":
+			return {
+				...state,
+				cartItems: payload,
+			};			
 
 		case "REMOVE_ITEM_FROM_CART":
 			return {
@@ -67,7 +76,7 @@ export const reducerCallback = (state, { type, payload }) => {
 		case "SET_IS_SELLER": 
 			return { 
 				...state, 
-				isSeller: !state.isSeller
+				isSeller: payload
 			}
 
 		case "SET_SEARCH_QUERY":

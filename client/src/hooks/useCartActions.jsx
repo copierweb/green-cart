@@ -15,7 +15,7 @@ const useCartActions = () => {
 
 	// Add Product to cart
 	const addToCart = (itemId) => {
-		let cartData = state.cartItems;
+		let cartData = structuredClone(state.cartItems);
 
 		if (cartData[itemId]) {
 			cartData[itemId] += 1;

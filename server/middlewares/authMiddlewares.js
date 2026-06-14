@@ -39,7 +39,7 @@ export const protectSeller = async (req, res, next) => {
 	const sellerToken = req.cookies.sellerJWT
 
 	if(!sellerToken) {
-		return next( new AppError("Not Authorized", 401))
+		return next( new AppError("seller Not Authorized", 401))
 	}
 
 	const decoded = await promisify(jwt.verify)(sellerToken, process.env.JWT_SECRET)

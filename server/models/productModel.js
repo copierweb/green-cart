@@ -35,7 +35,7 @@ const productSchema = new mongoose.Schema({
 
 
 // creating model
-const Product = mongoose.models.product || mongoose.model('Product', productSchema)
+const Product = mongoose.models.Product || mongoose.model('Product', productSchema)
 
 
 

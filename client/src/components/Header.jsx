@@ -5,26 +5,43 @@ import { useEffect, useState } from "react";
 import { useAppContext } from "../context/AppContext";
 import { NavLink } from "react-router-dom";
 import useCartActions from "../hooks/useCartActions";
+import toast from "react-hot-toast"
 
 const Header = () => {
 	const {
 		actions,
 		state: { user, searchQuery, cartItems },
 		navigate,
+		axios
 	} = useAppContext();
 
 	const { getCartItemCount } = useCartActions();
-
 	const totalCartItems = Object.values(cartItems)?.reduce(
 		(acc, item) => acc + item,
 		0,
-	);
+	) 
 
 	const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
 
-	const logout = () => {
-		actions.setUserLogout();
-		setMobileSidebarOpen(false);
+	const logout = async(e) => {
+		try {
+			e.preventDefault()
+
+			const {data} = await axios.post("/api/v1/users/logout",{})
+			if(data.status === 'success') {
+				toast.success(data.message)
+				actions.setUserLogout();
+				setMobileSidebarOpen(false);
+				navigate("/")
+			} else {
+				toast.error(data.message || "some error when logout")
+			}
+
+		} catch(err) {
+			console.log(err.response?.data.message || err.message);
+			toast.error(err.response?.data.message || err.message);
+		}
+
 	};
 
 	const login = () => {

@@ -1,6 +1,8 @@
 import { assets, categories } from "../../assets/assets";
+import { useAppContext } from "../../context/AppContext";
 import Button from "../Button";
 import { useState } from "react";
+import toast from "react-hot-toast";
 
 const AddProduct = () => {
 	const [productValue, setProductValue] = useState({
@@ -11,6 +13,8 @@ const AddProduct = () => {
 		description: [],
 	});
 	const [imgFiles, setImgFiles] = useState([]);
+
+	const { state, axios, actions } = useAppContext();
 
 	const handleChange = (e) => {
 		const { name, value } = e.target;
@@ -30,15 +34,46 @@ const AddProduct = () => {
 	};
 
 	const handleOnSubmit = async (e) => {
-		e.preventDefault();
-		setProductValue({
-			name: "",
-			category: "",
-			price: 0,
-			offerPrice: 0,
-			// image: [],
-			description: [],
-		});
+		try {
+			actions.setUploading(true)
+
+			e.preventDefault();
+			const productData = {
+				...productValue,
+				description: productValue.description.split("\n"),
+			};
+
+			const formData = new FormData();
+			// append product data
+			formData.append("productData", JSON.stringify(productData));
+
+			// append image files to form data (use forEach for multiple images)
+			Array.from(imgFiles).forEach((img, index) => {
+				formData.append("images", img);
+			});
+
+			// send form data to backend
+			const { data } = await axios.post("/api/v1/product/add", formData);
+
+			if (data.status === "success") {
+				toast.success(data.message);
+				setProductValue({
+					name: "",
+					category: "",
+					price: 0,
+					offerPrice: 0,
+					description: [],
+				});
+				setImgFiles([])
+			} else {
+				toast.error(data.message);
+			}
+		} catch (err) {
+			toast.error(err.response?.data.message || err.message);
+			console.log(err);
+		} finally {
+			actions.setUploading(false)
+		}
 	};
 	// console.log(imgFiles);
 	return (
@@ -189,11 +224,15 @@ const AddProduct = () => {
 				</div>
 			</div>
 
-			<Button type="submit" className="self-start px-10">
-				Add
+			<Button type="submit" className="self-start px-10" disabled={state.uploading}>
+				{ state.uploading ? "Uploading...." : "Add"}
 			</Button>
 		</form>
 	);
 };
 
 export default AddProduct;
+
+// for(let i=0; i < imgFiles.length; i++) {
+// 	formData.append('images',imgFiles[i])
+// }

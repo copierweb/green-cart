@@ -11,6 +11,13 @@ const cookieOptions = {
 	maxAge: 90 * 24 * 60 * 60 * 1000, // converting 7 days into milliseconds(cookie expiration time)
 };
 
+const clearCookieOptions = {
+  httpOnly: true,
+  secure: process.env.NODE_ENV === "production",
+  sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
+  path: "/"	
+}
+
 // ------------------------------------------------------------------------
 // helper function for generating jwt token
 const generateToken = (id) => {
@@ -59,7 +66,7 @@ export const register = async (req, res) => {
 
 	res.status(201).json({
 		status: "success",
-		token,
+		message: "new user created successfully",
 		user: newUser,
 	});
 };
@@ -95,6 +102,12 @@ export const login = async (req, res, next) => {
 		user,
 	});
 };
+// ------------------------------------------------------------------------ //
+// check user is authenticated : GET-/api/v1/user/is-auth
+export const isUserAuth = async (req, res) => {
+	res.status(200).json({status: "success",user: req.user})
+}
+
 // -------------------------------------------------------------------------- //
 // logout current loggedin user ---> /api/v1/users/logout
 
@@ -118,7 +131,7 @@ export const sellerLogin = async (req, res, next) => {
 
 	// 1). checking email and password are provided
 	if (!email || !password) {
-		return next(new AppError("please provide email and password", 401));
+		return next(new AppError("please provide email and password", 400));
 	}
 
 	// 2). check seller email and password is correct
@@ -151,10 +164,30 @@ export const isSellerAuth = async (req, res) => {
 // seller logOut: /api/v1/seller/logout
 
 export const sellerLogout = async (req, res) => {
-	res.clearCookie("sellerJWT", cookieOptions);
+	res.clearCookie("sellerJWT", {
+		httpOnly: true,
+		sameSite: "strict",
+		secure: false,
+		path: "/",
+	});
 
 	res.status(200).json({
 		status: "success",
 		message: "seller successfully Logged out",
 	});
 };
+
+// sellerJWT:"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImFkbWluQGV4YW1wbGUuY29tIiwiaWF0IjoxNzgxMTY4MzI2LCJleHAiOjE3ODg5NDQzMjZ9.t7418DwjZE-Wc6EWUtkELg1GPVSZVhviQL1wAeW1wWc"
+// Created:"Thu, 11 Jun 2026 08:58:46 GMT"
+// Domain:"localhost"
+// Expires / Max-Age:"Wed, 09 Sep 2026 08:58:46 GMT"
+// HostOnly:true
+// Last Accessed:"Thu, 11 Jun 2026 08:58:46 GMT"
+// Path:"/"
+// SameSite:"Strict"
+// Secure:false
+// Size:170
+// Updated:"Thu, 11 Jun 2026 08:58:46 GMT"
+
+// Set-Cookie
+// 	jwt=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT; HttpOnly; SameSite=Strict
