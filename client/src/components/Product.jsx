@@ -28,7 +28,7 @@ const Product = ({ product }) => {
 			"
 		>
 			<img
-				src={image}
+				src={image[0]}
 				alt={name}
 				className="
 					group-hover:scale-110

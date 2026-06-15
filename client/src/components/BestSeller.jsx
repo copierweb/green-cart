@@ -8,7 +8,7 @@ const BestSeller = () => {
 	const productsCopy = [...products];
 	const bestSellers = productsCopy
 		.filter((product) => product.inStock)
-		.slice(4, 9);
+		.slice(0, 5);
 
 	return (
 		<div
